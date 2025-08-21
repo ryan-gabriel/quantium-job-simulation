@@ -1,17 +1,36 @@
+from dash import Dash, html, dcc
+import plotly.express as px
 import pandas as pd
 
-def main():
-    files_path = ["data/daily_sales_data_0.csv","data/daily_sales_data_1.csv","data/daily_sales_data_2.csv"]
-    df_list = [pd.read_csv(path) for path in files_path]
-    merged_df = pd.concat(df_list, ignore_index=True)
+app = Dash()
+
+df = pd.read_csv('output/data.csv')
+
+fig = px.bar(df, x="date", y="sales", color="region", barmode="group")
+
+app.layout = html.Div(children=[
+    # Global style via html.Style
+     html.Link(rel="stylesheet", href="/assets/style.css"),
     
-    merged_df = merged_df[merged_df["product"] == "pink morsel"]
-    merged_df["price"] = merged_df["price"].replace('[\$,]', '', regex=True).astype(float)
+    html.H1(children='Pink Morsel Data Visualizer', style={
+        "color": "white",
+        "width": "100%",
+        "padding": "1rem",
+        "textAlign": "center",
+        "backgroundColor": "#141414"
+    }),
 
-    merged_df["sales"] = merged_df["quantity"] * merged_df["price"]
-    merged_df.drop(columns=["quantity", "price", "product"], inplace=True)
+    html.Div(children='Dash: A web application framework for your data.', style={
+        "color": "white",
+        "padding": "0 1rem"
+    }),
 
-    merged_df.to_csv("output/data.csv", index=False)
+    dcc.Graph(
+        id='example-graph',
+        figure=fig,
+        style={"margin": "0", "padding": "0"}
+    )
+])
 
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    app.run(debug=True)
