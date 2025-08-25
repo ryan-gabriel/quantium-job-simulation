@@ -31,6 +31,7 @@ app.layout = html.Div(
                 "fontSize": "2rem",
                 "letterSpacing": "1px",
             },
+            id="header"
         ),
 
         html.P(
